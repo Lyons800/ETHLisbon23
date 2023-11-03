@@ -23,9 +23,8 @@ contract SoulBoundToken is ERC721, Ownable {
         _burn(tokenId);
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256) pure override internal {
-        require(from == address(0) || to == address(0), "This a Soulbound token. It cannot be transferred. It    
-can only be burned by the token owner.");
+    function _beforeTokenTransfer(address from, address to, uint256) pure internal {
+        require(from == address(0) || to == address(0), "This a Soulbound token. It cannot be transferred. It can only be burned by the token owner.");
     }
 
     function _burn(uint256 tokenId) internal override(ERC721) {
