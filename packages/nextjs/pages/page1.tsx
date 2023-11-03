@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { MetaHeader } from "~~/components/MetaHeader";
 import Stepper from "~~/components/mint-poap/stepper-form";
 
-const Home: NextPage = () => {
+const Mint: NextPage = () => {
   return (
     <>
       <MetaHeader />
@@ -13,4 +13,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Mint;
