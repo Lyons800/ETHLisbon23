@@ -44,31 +44,38 @@ const DaosPage: NextPage = () => {
       <ul role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8">
         {daos.map(dao => (
           <li key={dao.id} className="overflow-hidden rounded-xl border border-gray-200 lg:max-w-md">
-            <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
-              <Image
-                src={dao.imageUrl}
-                alt={dao.name}
-                className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"
-                width={48}
-                height={48}
-              />
-              <div className="flex flex-col">
-                <div className="text-md font-medium leading-6 text-gray-900">{dao.name}</div>
-                <dt className="text-gray-500 flex flex-row items-center gap-1 text-xs">
-                  <UserGroupIcon className="w-4 h-4" />
-                  {dao.members} members
-                </dt>
+            <a href="daos/1" className="block">
+              <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
+                <Image
+                  src={dao.imageUrl}
+                  alt={dao.name}
+                  className="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10"
+                  width={48}
+                  height={48}
+                />
+                <div className="flex flex-col">
+                  <div className="text-md font-medium leading-6 text-gray-900">{dao.name}</div>
+                  <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
+                    <dt className="text-gray-500">Description</dt>
+                    <dd className="py-3">{dao.description}</dd>
+                    <dt className="text-gray-500 flex flex-row items-center gap-1 text-xs">
+                      <UserGroupIcon className="w-4 h-4" />
+                      Members
+                    </dt>
+                    <dd className="text-xs">{dao.members} members</dd>
+                  </dl>
+                </div>
               </div>
-            </div>
-            <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
-              <div className="flex justify-between gap-x-4 py-3">
-                <dt className="text-gray-500">{dao.description}</dt>
-                <dd className="text-gray-700"></dd>
-              </div>
-              <div className="flex justify-between gap-x-4 py-3">
-                <dd className="flex items-start gap-x-2"></dd>
-              </div>
-            </dl>
+              <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
+                <div className="flex justify-between gap-x-4 py-3">
+                  <dt className="text-gray-500">{dao.description}</dt>
+                  <dd className="text-gray-700"></dd>
+                </div>
+                <div className="flex justify-between gap-x-4 py-3">
+                  <dd className="flex items-start gap-x-2"></dd>
+                </div>
+              </dl>
+            </a>
           </li>
         ))}
       </ul>

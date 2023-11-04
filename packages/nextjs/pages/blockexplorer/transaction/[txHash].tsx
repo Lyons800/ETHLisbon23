@@ -117,14 +117,34 @@ const TransactionPage: NextPage = () => {
                 <td>
                   <strong>Data:</strong>
                 </td>
-                <td className="form-control">
-                  <textarea readOnly value={transaction.input} className="p-0 textarea-primary bg-inherit h-[150px]" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Logs:</strong>
-                </td>
+                <tr>
+                  <td>
+                    <label htmlFor="input">Input:</label>
+                  </td>
+                  <td className="form-control">
+                    <textarea
+                      id="input"
+                      readOnly
+                      value={transaction.input}
+                      className="p-0 textarea-primary bg-inherit h-[150px]"
+                      placeholder="Transaction input"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label htmlFor="logs">Logs:</label>
+                  </td>
+                  <td className="form-control">
+                    <ul id="logs">
+                      {receipt?.logs?.map((log, i) => (
+                        <li key={i}>
+                          <strong>Log {i} topics:</strong> {JSON.stringify(log.topics, replacer, 2)}
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
                 <td>
                   <ul>
                     {receipt?.logs?.map((log, i) => (
