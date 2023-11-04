@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import SoulboundToken from "../../SoulBoundToken.json";
+import SurveyToken from "../../SoulBoundToken.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useContractWrite } from "wagmi";
 import { GlobeAltIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
-
-{
-  /*SoulboundToken is in my route folder for nextjs */
-}
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -45,19 +41,21 @@ export default function Stepper() {
     },
   ];
 
+  const surveyString = "This is a survey string";
+
   const handleVerificationNext = () => {
     // Add verification logic here if needed
     setCurrentStep(2);
   };
 
-  const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract's address
+  const CONTRACT_ADDRESS = "0x5d55066aBCFaccAB00899a76D3281390Be10CD87"; // Replace with your contract's address
 
   console.log("CONTRACT_ADDRESS", CONTRACT_ADDRESS);
-  console.log("SoulboundToken.abi", SoulboundToken.abi);
+  console.log("SurveyToken", SurveyToken);
   const { write } = useContractWrite({
     address: CONTRACT_ADDRESS,
-    abi: SoulboundToken.abi,
-    functionName: "safeMint", // Replace with your mint function's name
+    abi: SurveyToken,
+    functionName: "submitSurvey", // Replace with your mint function's name
   });
 
   const handleMint = async () => {
@@ -66,7 +64,7 @@ export default function Stepper() {
       console.log("Public option selected");
 
       try {
-        await write({ args: [address] });
+        await write({ args: [address, surveyString] });
         console.log("Transaction sent successfully!");
       } catch (e) {
         console.error("Error sending transaction:", e);

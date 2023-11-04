@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
+import contractAbi from "/Users/oisinlyons/GitHub/ETHLisbon23/packages/nextjs/SurveyAbi.json";
 import { NextPage } from "next";
-import { getContractNFTs, getNFTMetadata } from "~~/services/web3/moralis";
+import { useContractRead } from "wagmi";
 
 interface ProposalPageProps {
   proposals: Array<{ id: string; title: string; description: string }>;
@@ -8,48 +9,35 @@ interface ProposalPageProps {
   metadata: any; // Add type definition for the metadata data structure
 }
 
-const ProposalPage: NextPage<ProposalPageProps> = ({ proposals }) => {
+const ProposalPage: NextPage<ProposalPageProps> = () => {
   const router = useRouter();
   const { proposal } = router.query;
   console.log(proposal);
+  const proposalId = proposal as string;
 
-  // Ensure proposals is defined before trying to find the selected proposal
-  const selectedProposal = proposals?.find(p => p.id === proposal);
+  const ABI = contractAbi;
+
+  const contractRead = useContractRead({
+    address: proposalId,
+    abi: ABI,
+    functionName: "name",
+    suspense: true,
+  });
+
+  // If there's no data yet, show a loading state
+  if (!contractRead.data) {
+    return <div>Loading...</div>;
+  }
+  // Type assertion to tell TypeScript that contractRead.data is of type string
+  console.log("Contract Data:", contractRead);
+  const contractName = contractRead.data as string;
 
   // Render the proposal page
   return (
-    <div>
-      {selectedProposal ? (
-        <>
-          <h1>{selectedProposal.title}</h1>
-          <p>{selectedProposal.description}</p>
-
-          {/* Render other proposal content here */}
-        </>
-      ) : (
-        <p>Proposal not found</p>
-      )}
+    <div className="flex flex-col gap-y-6 lg:gap-y-8 py-8 lg:py-12 lg-mx-12 justify-center items-center">
+      <div>{contractName}</div>
     </div>
   );
 };
-
-// Fetch data on server-side
-export async function getServerSideProps() {
-  const contract = "0x22C1f6050E56d2876009903609a2cC3fEf83B415";
-  const chain = "gnosis";
-
-  // Fetch data from Moralis API
-  const nfts = await getContractNFTs(chain, contract);
-  const metadata = await getNFTMetadata(chain, contract, "1"); // You might want to change the tokenId based on your use case
-
-  // Return as props
-  return {
-    props: {
-      nfts,
-      metadata,
-      proposals: [], // Add your logic to fetch proposals or pass them as static data
-    },
-  };
-}
 
 export default ProposalPage;

@@ -9,9 +9,24 @@ function ProposalsPage() {
 
   // Create an array of proposals
   const allProposals = [
-    { id: 1, title: "Proposal 1", description: "This is the first proposal", daoId: 1 },
-    { id: 2, title: "Proposal 2", description: "This is the second proposal", daoId: 2 },
-    { id: 3, title: "Proposal 3", description: "This is the third proposal", daoId: 3 },
+    {
+      id: "0x22C1f6050E56d2876009903609a2cC3fEf83B415",
+      title: "Proposal 1",
+      description: "This is the first proposal",
+      daoId: 1,
+    },
+    {
+      id: "0x3bb247ca67B5a23D25F7FAAdC4c28E1332Aa1489",
+      title: "Proposal 2",
+      description: "This is the second proposal",
+      daoId: 1,
+    },
+    {
+      id: "0x5d55066aBCFaccAB00899a76D3281390Be10CD87",
+      title: "Survey Token Checker",
+      description: "This is the third proposal",
+      daoId: 1,
+    },
   ];
   // fetch proposals (smart contracts) based on the DAO id from the smart contract
 

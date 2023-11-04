@@ -1,7 +1,7 @@
 import React from "react";
 
 interface Proposal {
-  id: number;
+  id: string;
   title: string;
   description: string;
   daoId: number;
