@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+import { GlobeAltIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
 
 function classNames(...classes: string[]) {
@@ -10,6 +11,7 @@ function classNames(...classes: string[]) {
 export default function Stepper() {
   const { address } = useAccount();
   const [currentStep, setCurrentStep] = useState(address ? 1 : 0);
+  const [selectedOption, setSelectedOption] = useState<"public" | "private" | null>(null);
 
   useEffect(() => {
     if (address && currentStep === 0) {
@@ -44,7 +46,15 @@ export default function Stepper() {
   };
 
   const handleMint = () => {
-    // Add minting logic here
+    // Access the selectedOption state here to determine the user's choice
+    if (selectedOption === "public") {
+      console.log("Public option selected");
+    } else if (selectedOption === "private") {
+      console.log("Private option selected");
+    } else {
+      console.log("No option selected");
+    }
+
     console.log("Credential minted!");
   };
 
@@ -77,7 +87,30 @@ export default function Stepper() {
         );
       case 2:
         return (
-          <div className="flex items-center">
+          <div className="flex flex-col items-center w-full gap-2">
+            Would you like your survey result to be public or private?
+            <div className="flex flex-row gap-2">
+              {/*Make data public option */}
+              <div
+                className={`border border-gray-200 rounded-md p-4 mr-4 hover:cursor-pointer hover:bg-slate-100 items-center justify-center ${
+                  selectedOption === "public" ? "bg-indigo-100" : ""
+                }`}
+                onClick={() => setSelectedOption("public")}
+              >
+                <GlobeAltIcon className="h-12 w-12 text-gray-500" aria-hidden="true" />
+                Public
+              </div>
+
+              <div
+                className={`border border-gray-200 rounded-md p-4 mr-4 hover:cursor-pointer hover:bg-slate-100 items-center justify-center ${
+                  selectedOption === "private" ? "bg-indigo-100" : ""
+                }`}
+                onClick={() => setSelectedOption("private")}
+              >
+                <LockClosedIcon className="h-12 w-12 text-gray-500" aria-hidden="true" />
+                Private
+              </div>
+            </div>
             <button className="btn btn-success btn-sm" onClick={handleMint}>
               Mint
             </button>
