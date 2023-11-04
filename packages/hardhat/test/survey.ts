@@ -9,7 +9,7 @@ describe("SurveyToken", function () {
 
   before(async () => {
     // [owner, respondent] = await ethers.getSigners();
-    [_, respondent] = await ethers.getSigners();
+    [, respondent] = await ethers.getSigners();
     const surveyTokenFactory = await ethers.getContractFactory("SurveyToken");
     surveyToken = (await surveyTokenFactory.deploy()) as SurveyToken;
     await surveyToken.deployed();
