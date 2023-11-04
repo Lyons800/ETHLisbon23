@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract SurveyToken is ERC721Enumerable, Pausable, Ownable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _surveyIds;
+
+    constructor() ERC721("SurveyToken", "SVY") {}
+
+    function submitSurvey(address respondent, string memory surveyMetadataURI)
+        public
+        whenNotPaused
+        returns (uint256)
+    {
+        uint256 newSurveyId = _surveyIds.current();
+        _mint(respondent, newSurveyId);
+        _setTokenURI(newSurveyId, surveyMetadataURI);
+
+        _surveyIds.increment();
+        return newSurveyId;
+    }
+
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override(ERC721, ERC721Enumerable, ERC721URIStorage) whenNotPaused {
+        require(from == address(0), "SurveyToken: non-transferable");
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    // The following functions are overrides required by Solidity.
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override(ERC721, IERC721) {
+        revert("SurveyToken: transfer not allowed");
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override(ERC721, IERC721) {
+        revert("SurveyToken: transfer not allowed");
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory _data
+    ) public override(ERC721, IERC721) {
+        revert("SurveyToken: transfer not allowed");
+    }
+
+    function approve(address to, uint256 tokenId) public override(ERC721, IERC721) {
+        revert("SurveyToken: approve not allowed");
+    }
+
+    function setApprovalForAll(address operator, bool _approved) public override(ERC721, IERC721) {
+        revert("SurveyToken: approve not allowed");
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable, IERC165) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function totalSupply() public view override(ERC721Enumerable) returns (uint256) {
+        return super.totalSupply();
+    }
+
+    function tokenByIndex(uint256 index) public view override(ERC721Enumerable) returns (uint256) {
+        return super.tokenByIndex(index);
+    }
+
+    function tokenOfOwnerByIndex(address owner, uint256 index) public view override(ERC721Enumerable) returns (uint256) {
+        return super.tokenOfOwnerByIndex(owner, index);
+    }
+}
