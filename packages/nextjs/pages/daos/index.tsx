@@ -43,7 +43,7 @@ const DaosPage: NextPage = () => {
     <div className="flex flex-col gap-y-6 lg:gap-y-8 py-8 lg:py-12 lg-mx-12 justify-center items-center">
       <ul role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8">
         {daos.map(dao => (
-          <li key={dao.id} className="overflow-hidden rounded-xl border border-gray-200 lg:max-w-md">
+          <li key={dao.id} className="overflow-hidden rounded-xl border border-gray-200 lg:max-w-md hover:bg-slate-100">
             <a href="daos/1" className="block">
               <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
                 <Image
@@ -55,12 +55,9 @@ const DaosPage: NextPage = () => {
                 />
                 <div className="flex flex-col">
                   <div className="text-md font-medium leading-6 text-gray-900">{dao.name}</div>
-                  <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
-                    <dt className="text-gray-500">Description</dt>
-                    <dd className="py-3">{dao.description}</dd>
+                  <dl className="flex flex-row divide-y divide-gray-100 text-sm gap-1">
                     <dt className="text-gray-500 flex flex-row items-center gap-1 text-xs">
                       <UserGroupIcon className="w-4 h-4" />
-                      Members
                     </dt>
                     <dd className="text-xs">{dao.members} members</dd>
                   </dl>
