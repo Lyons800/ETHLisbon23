@@ -23,6 +23,19 @@ contract SurveyToken is ERC721URIStorage {
         return newSurveyId;
     }
 
+    function getAllTokenHolders() public view returns (address[] memory, string[] memory) {
+        uint256 totalSupply = _surveyIds.current();
+        address[] memory holders = new address[](totalSupply);
+        string[] memory tokenURIs = new string[](totalSupply);
+
+        for (uint256 i = 0; i < totalSupply; i++) {
+            holders[i] = ownerOf(i);
+            tokenURIs[i] = tokenURI(i);
+        }
+
+        return (holders, tokenURIs);
+    }
+
     // Additional functions and modifiers can be added for access control and other features
     
 }
