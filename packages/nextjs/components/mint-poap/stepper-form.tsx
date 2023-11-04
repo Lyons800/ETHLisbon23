@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
+import SoulboundToken from "../../SoulBoundToken.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import { useAccount, useContractWrite } from "wagmi";
 import { GlobeAltIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
+
+{
+  /*SoulboundToken is in my route folder for nextjs */
+}
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -45,10 +50,27 @@ export default function Stepper() {
     setCurrentStep(2);
   };
 
-  const handleMint = () => {
+  const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract's address
+
+  console.log("CONTRACT_ADDRESS", CONTRACT_ADDRESS);
+  console.log("SoulboundToken.abi", SoulboundToken.abi);
+  const { write } = useContractWrite({
+    address: CONTRACT_ADDRESS,
+    abi: SoulboundToken.abi,
+    functionName: "safeMint", // Replace with your mint function's name
+  });
+
+  const handleMint = async () => {
     // Access the selectedOption state here to determine the user's choice
     if (selectedOption === "public") {
       console.log("Public option selected");
+
+      try {
+        await write({ args: [address] });
+        console.log("Transaction sent successfully!");
+      } catch (e) {
+        console.error("Error sending transaction:", e);
+      }
     } else if (selectedOption === "private") {
       console.log("Private option selected");
     } else {
