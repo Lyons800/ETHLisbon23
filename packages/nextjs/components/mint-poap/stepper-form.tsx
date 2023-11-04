@@ -77,9 +77,11 @@ export default function Stepper() {
         );
       case 2:
         return (
-          <button className="btn btn-success btn-sm" onClick={handleMint}>
-            Mint
-          </button>
+          <div className="flex items-center">
+            <button className="btn btn-success btn-sm" onClick={handleMint}>
+              Mint
+            </button>
+          </div>
         );
       default:
         return null;
