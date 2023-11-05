@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SurveyToken from "../../SoulBoundToken.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useContractWrite } from "wagmi";
+import { useAccount } from "wagmi";
 import { GlobeAltIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
 
@@ -51,7 +51,7 @@ export default function Stepper() {
     },
   ];
 
-  const surveyString = "This is a survey string";
+  // const surveyString = "This is a survey string";
 
   const handleVerificationNext = () => {
     // Add verification logic here if needed
@@ -62,51 +62,53 @@ export default function Stepper() {
 
   console.log("CONTRACT_ADDRESS", CONTRACT_ADDRESS);
   console.log("SurveyToken", SurveyToken);
-  const { write } = useContractWrite({
-    address: CONTRACT_ADDRESS,
-    abi: SurveyToken,
-    functionName: "submitSurvey", // Replace with your mint function's name
-  });
+  // const { write } = useContractWrite({
+  //   address: CONTRACT_ADDRESS,
+  //   abi: SurveyToken,
+  //   functionName: "submitSurvey", // Replace with your mint function's name
+  // });
 
   const handleMint = async () => {
     // Access the selectedOption state here to determine the user's choice
     if (selectedOption === "public") {
       console.log("Public option selected");
 
+      //   try {
+      //     await write({ args: [address, surveyString] });
+      //     console.log("Transaction sent successfully!");
+      //   } catch (e) {
+      //     console.error("Error sending transaction:", e);
+      //   }
+      // } else if (selectedOption === "private") {
+      //   console.log("Private option selected");
+      // } else {
+      //   console.log("No option selected");
+      // }
+
+      console.log("Credential minted!");
+      console.log("Address type:", typeof address);
+      const respondentAddress = `${address}`;
+      const surveyMetadataURI = "HELLO WORLD";
+
       try {
-        await write({ args: [address, surveyString] });
-        console.log("Transaction sent successfully!");
-      } catch (e) {
-        console.error("Error sending transaction:", e);
+        setIsLoading(true);
+        const response = await fetch("/api/mintNFT", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            respondentAddress,
+            surveyMetadataURI,
+          }),
+        });
+
+        setIsLoading(false);
+
+        console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${(response as any).taskId}`);
+      } catch (error) {
+        console.error("Failed to execute transaction:", error);
       }
-    } else if (selectedOption === "private") {
-      console.log("Private option selected");
-    } else {
-      console.log("No option selected");
-    }
-
-    console.log("Credential minted!");
-    const respondentAddress = "0x342822C90cE6Cb1414811D503357a732ae5EfF0F";
-    const surveyMetadataURI = "HELLO WORLD";
-
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/mintNFT", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          respondentAddress,
-          surveyMetadataURI,
-        }),
-      });
-
-      setIsLoading(false);
-
-      console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${(response as any).taskId}`);
-    } catch (error) {
-      console.error("Failed to execute transaction:", error);
     }
   };
 
