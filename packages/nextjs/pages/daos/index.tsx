@@ -6,12 +6,12 @@ import { UserGroupIcon } from "@heroicons/react/24/outline";
 const daos = [
   {
     id: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
-    name: "MetaCartel Ventures",
+    name: "SafeDAO",
     members: 100,
-    imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
+    imageUrl: "https://pbs.twimg.com/profile_images/1643941027898613760/gyhYEOCE_400x400.jpg",
     backgroundUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
     description:
-      "MetaCartel Ventures is a DAO that invests in early stage projects that are building the future of web3.",
+      "Safe{DAO} aims to foster a vibrant ecosystem of applications and wallets leveraging Safe Accounts. This will be achieved through data-backed discussions, grants, ecosystem investments, as well as providing developer tools and infrastructure.",
   },
   // {
   //   id: "2",

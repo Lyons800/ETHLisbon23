@@ -81,8 +81,7 @@ export default function Stepper() {
   // const CONTRACT_ADDRESS = "0xE35dbC55480d5a15805dbEC0e2109e34d5568799"; // Replace with your contract's address
 
   const CONTRACT_ADDRESS = contractAddress; // Replace with your contract's address
-
-  console.log("CONTRACT_ADDRESS", CONTRACT_ADDRESS);
+  console.log("CONTRACT_ADDRESS123", CONTRACT_ADDRESS);
   console.log("SurveyToken", SurveyToken);
   // const { write } = useContractWrite({
   //   address: CONTRACT_ADDRESS,
