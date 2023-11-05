@@ -53,14 +53,11 @@ const DaosPage: NextPage = () => {
                   width={48}
                   height={48}
                 />
-                <div className="flex flex-col">
+                <div className="flex flex-col gap2">
                   <div className="text-md font-medium leading-6 text-gray-900">{dao.name}</div>
-                  <dl className="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
-                    <dt className="text-gray-500">Description</dt>
-                    <dd className="py-3">{dao.description}</dd>
+                  <dl className="flex flex-row gap-2 divide-gray-100 text-sm ">
                     <dt className="text-gray-500 flex flex-row items-center gap-1 text-xs">
                       <UserGroupIcon className="w-4 h-4" />
-                      Members
                     </dt>
                     <dd className="text-xs">{dao.members} members</dd>
                   </dl>

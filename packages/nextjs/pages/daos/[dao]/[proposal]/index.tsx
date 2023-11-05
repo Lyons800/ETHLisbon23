@@ -25,9 +25,7 @@ const ProposalPage: NextPage<ProposalPageProps> = () => {
   });
 
   // If there's no data yet, show a loading state
-  if (!contractRead.data) {
-    return <div>Loading...</div>;
-  }
+
   // Type assertion to tell TypeScript that contractRead.data is of type string
   console.log("Contract Data:", contractRead);
   const contractName = contractRead.data as string;
