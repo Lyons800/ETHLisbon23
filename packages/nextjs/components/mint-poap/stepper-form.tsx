@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import SurveyToken from "../../SoulBoundToken.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
@@ -10,10 +11,13 @@ function classNames(...classes: string[]) {
 }
 
 export default function Stepper() {
+  const router = useRouter();
   const { address } = useAccount();
   const [currentStep, setCurrentStep] = useState(address ? 1 : 0);
   const [selectedOption, setSelectedOption] = useState<"public" | "private" | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const surveyMetaQueryParam = router.query.surveyMeta;
 
   //   const { data, isLoading } = useQuery({
   //   queryKey: ['taskStatus', taskId],
@@ -73,22 +77,10 @@ export default function Stepper() {
     if (selectedOption === "public") {
       console.log("Public option selected");
 
-      //   try {
-      //     await write({ args: [address, surveyString] });
-      //     console.log("Transaction sent successfully!");
-      //   } catch (e) {
-      //     console.error("Error sending transaction:", e);
-      //   }
-      // } else if (selectedOption === "private") {
-      //   console.log("Private option selected");
-      // } else {
-      //   console.log("No option selected");
-      // }
-
       console.log("Credential minted!");
       console.log("Address type:", typeof address);
       const respondentAddress = `${address}`;
-      const surveyMetadataURI = "HELLO WORLD";
+      const surveyMetadataURI = surveyMetaQueryParam || "HELLO WORLD"; // Use the query parameter value or default to "HELLO WORLD"
 
       try {
         setIsLoading(true);
