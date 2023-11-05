@@ -1,0 +1,16 @@
+{
+    "proposals": [
+        {
+            "url": "https://example.com/proposal1",
+            "contractAddress": "0x1234567890123456789012345678901234567890"
+        },
+        {
+            "url": "https://example.com/proposal2",
+            "contractAddress": "0x0987654321098765432109876543210987654321"
+        },
+        {
+            "url": "https://example.com/proposal3",
+            "contractAddress": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+        }
+    ]
+}

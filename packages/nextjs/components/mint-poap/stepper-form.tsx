@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import SurveyToken from "../../SoulBoundToken.json";
+import proposals from "./proposals.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import { GlobeAltIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
+
+// Import your proposals.json
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -16,8 +19,10 @@ export default function Stepper() {
   const [currentStep, setCurrentStep] = useState(address ? 1 : 0);
   const [selectedOption, setSelectedOption] = useState<"public" | "private" | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [contractAddress, setContractAddress] = useState<string>(""); // State to hold the contract address
 
   const surveyMetaQueryParam = router.query.surveyMeta;
+  const proposalURLQueryParam = router.query.proposalURL;
 
   //   const { data, isLoading } = useQuery({
   //   queryKey: ['taskStatus', taskId],
@@ -33,6 +38,17 @@ export default function Stepper() {
       setCurrentStep(1);
     }
   }, [address, currentStep]);
+
+  useEffect(() => {
+    if (proposalURLQueryParam) {
+      const matchingProposal = proposals.proposals.find(
+        (proposal: { url: string | string[] }) => proposal.url === proposalURLQueryParam,
+      );
+      if (matchingProposal) {
+        setContractAddress(matchingProposal.contractAddress);
+      }
+    }
+  }, [proposalURLQueryParam]);
 
   const steps = [
     {
@@ -62,7 +78,9 @@ export default function Stepper() {
     setCurrentStep(2);
   };
 
-  const CONTRACT_ADDRESS = "0xE35dbC55480d5a15805dbEC0e2109e34d5568799"; // Replace with your contract's address
+  // const CONTRACT_ADDRESS = "0xE35dbC55480d5a15805dbEC0e2109e34d5568799"; // Replace with your contract's address
+
+  const CONTRACT_ADDRESS = contractAddress; // Replace with your contract's address
 
   console.log("CONTRACT_ADDRESS", CONTRACT_ADDRESS);
   console.log("SurveyToken", SurveyToken);
