@@ -155,9 +155,9 @@ export default function Stepper() {
                   {proposalURLQueryParam}
                 </Link>
               </div>
-              <div className="flex flex-col items-center w-full gap-1">
+              <div className="flex flex-col items-center gap-1">
                 <div>Survey Submission</div>
-                <div>{surveyMetaQueryParam}</div>
+                <div>{atob(surveyMetaQueryParam as string)}</div>
               </div>
 
               <button className="btn btn-secondary btn-sm" onClick={handleVerificationNext}>
