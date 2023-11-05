@@ -58,7 +58,7 @@ export default function Stepper() {
     setCurrentStep(2);
   };
 
-  const CONTRACT_ADDRESS = "0x5d55066aBCFaccAB00899a76D3281390Be10CD87"; // Replace with your contract's address
+  const CONTRACT_ADDRESS = "0xE35dbC55480d5a15805dbEC0e2109e34d5568799"; // Replace with your contract's address
 
   console.log("CONTRACT_ADDRESS", CONTRACT_ADDRESS);
   console.log("SurveyToken", SurveyToken);

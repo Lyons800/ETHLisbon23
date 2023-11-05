@@ -10,7 +10,7 @@ function ProposalsPage() {
   // Create an array of proposals
   const allProposals = [
     {
-      id: "0x22C1f6050E56d2876009903609a2cC3fEf83B415",
+      id: "0xE35dbC55480d5a15805dbEC0e2109e34d5568799",
       title: "Proposal 1",
       description: "This is the first proposal",
       daoId: "0x3595c48501FC819ee506907ffd912BC2936e36e5",

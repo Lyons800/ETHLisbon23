@@ -10,7 +10,7 @@ const surveyTokenAbi = [
   "function submitSurvey(address respondent, string surveyMetadataURI) public returns (uint256)",
 ];
 
-const surveyTokenAddress = "0x5d55066aBCFaccAB00899a76D3281390Be10CD87";
+const surveyTokenAddress = "0xE35dbC55480d5a15805dbEC0e2109e34d5568799";
 
 const safeAddress = "0x3595c48501FC819ee506907ffd912BC2936e36e5";
 
