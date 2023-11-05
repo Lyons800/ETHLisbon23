@@ -82,6 +82,9 @@ export default function Stepper() {
       const respondentAddress = `${address}`;
       const surveyMetadataURI = surveyMetaQueryParam || "HELLO WORLD"; // Use the query parameter value or default to "HELLO WORLD"
 
+      console.log("respondentAddress", respondentAddress);
+      console.log("surveyMetadataURI", surveyMetadataURI);
+
       try {
         setIsLoading(true);
         const response = await fetch("/api/mintNFT", {
