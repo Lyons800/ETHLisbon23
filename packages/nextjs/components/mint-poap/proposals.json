@@ -1,0 +1,16 @@
+{
+    "proposals": [
+        {
+            "url": "https://forum.safe.global/t/sep-7-governance-framework/3711",
+            "contractAddress": "0xE35dbC55480d5a15805dbEC0e2109e34d5568799"
+        },
+        {
+            "url": "https://example.com/proposal2",
+            "contractAddress": "0x0987654321098765432109876543210987654321"
+        },
+        {
+            "url": "https://example.com/proposal3",
+            "contractAddress": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+        }
+    ]
+}

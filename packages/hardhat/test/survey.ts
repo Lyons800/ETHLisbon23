@@ -3,15 +3,15 @@ import { ethers } from "hardhat";
 import { SurveyToken } from "../typechain-types";
 
 describe("SurveyToken", function () {
-  let surveyToken: SurveyToken;
-  // let owner: SignerWithAddress;
-  let respondent: SignerWithAddress;
+  let surveyToken: Contract;
 
-  before(async () => {
-    // [owner, respondent] = await ethers.getSigners();
-    [, respondent] = await ethers.getSigners();
-    const surveyTokenFactory = await ethers.getContractFactory("SurveyToken");
-    surveyToken = (await surveyTokenFactory.deploy()) as SurveyToken;
+  before(async function () {
+    // Get the deployer's address
+    const [deployer] = await ethers.getSigners();
+
+    // Deploy the SurveyToken contract
+    const SurveyToken = await ethers.getContractFactory("SurveyToken");
+    surveyToken = await SurveyToken.deploy("SurveyToken", "STK", deployer);
     await surveyToken.deployed();
   });
 

@@ -3,19 +3,20 @@ import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
 import { GelatoRelayPack } from "@safe-global/relay-kit";
 import { MetaTransactionData } from "@safe-global/safe-core-sdk-types";
 import { ethers } from "ethers";
+import { NextApiRequest, NextApiResponse } from "next";
 
 const surveyTokenAbi = [
   // ... other contract methods,
   "function submitSurvey(address respondent, string surveyMetadataURI) public returns (uint256)",
 ];
 
-const surveyTokenAddress = "0x5d55066aBCFaccAB00899a76D3281390Be10CD87";
+const surveyTokenAddress = "0xE35dbC55480d5a15805dbEC0e2109e34d5568799";
 
 const safeAddress = "0x3595c48501FC819ee506907ffd912BC2936e36e5";
 
-const privateKey = process.env.DEPLOYER_PRIVATE_KEY!;
+const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     // Extract parameters from the request body
     const { respondentAddress, surveyMetadataURI } = req.body;
@@ -24,7 +25,7 @@ export default async function handler(req, res) {
       // Add your server-side logic here...
       const RPC_URL = "https://rpc.gnosischain.com/";
       const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
-      const privateKey = process.env.DEPLOYER_PRIVATE_KEY; // ensure this is set in your .env.local file
+      //@ts-ignore
       const signer = new ethers.Wallet(privateKey, provider);
       // ... rest of your existing function logic
 

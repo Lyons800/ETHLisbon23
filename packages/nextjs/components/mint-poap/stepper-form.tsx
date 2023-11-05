@@ -1,42 +1,32 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import SurveyToken from "../../SoulBoundToken.json";
+import proposals from "./proposals.json";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
-import { GelatoRelayPack } from "@safe-global/relay-kit";
-import { MetaTransactionData } from "@safe-global/safe-core-sdk-types";
-import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { prepareSendTransaction, sendTransaction } from "@wagmi/core";
-import { ethers } from "ethers";
-import QRCode from "qrcode.react";
 import { useAccount } from "wagmi";
+import { GlobeAltIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
 
-const queryClient = new QueryClient();
-
-const pollTaskStatus = ({ taskId }) => {
-  return fetch(`https://relay.gelato.digital/tasks/status/${taskId}`).then(res => res.json());
-};
+// Import your proposals.json
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function StepperWraper() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Stepper />
-    </QueryClientProvider>
-  );
-}
-
-function Stepper() {
+export default function Stepper() {
+  const router = useRouter();
   const { address } = useAccount();
   const [currentStep, setCurrentStep] = useState(address ? 1 : 0);
-  const [taskId, setTaskId] = useState<any>(null);
+  const [selectedOption, setSelectedOption] = useState<"public" | "private" | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [qrCodeUrl, setQrCodeUrl] = useState(""); // Add this state to hold the QR code URL
   const [iframeSrc, setIframeSrc] = useState("");
 
-  const queryClient = useQueryClient();
+  const [contractAddress, setContractAddress] = useState<string>(""); // State to hold the contract address
+
+  const surveyMetaQueryParam = router.query.surveyMeta;
+  const proposalURLQueryParam = router.query.proposalURL;
 
   //   const { data, isLoading } = useQuery({
   //   queryKey: ['taskStatus', taskId],
@@ -52,6 +42,17 @@ function Stepper() {
       setCurrentStep(1);
     }
   }, [address, currentStep]);
+
+  useEffect(() => {
+    if (proposalURLQueryParam) {
+      const matchingProposal = proposals.proposals.find(
+        (proposal: { url: string | string[] }) => proposal.url === proposalURLQueryParam,
+      );
+      if (matchingProposal) {
+        setContractAddress(matchingProposal.contractAddress);
+      }
+    }
+  }, [proposalURLQueryParam]);
 
   const steps = [
     {
@@ -74,42 +75,23 @@ function Stepper() {
     },
   ];
 
+  // const surveyString = "This is a survey string";
+
   const handleVerificationNext = () => {
     // Add verification logic here if needed
     setCurrentStep(2);
   };
 
-  const handleMint = async () => {
-    // Add minting logic here
-    console.log("Credential minted!");
-    const respondentAddress = "0x342822C90cE6Cb1414811D503357a732ae5EfF0F";
-    const surveyMetadataURI = "HELLO WORLD";
+  // const CONTRACT_ADDRESS = "0xE35dbC55480d5a15805dbEC0e2109e34d5568799"; // Replace with your contract's address
 
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/mintNFT", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          respondentAddress,
-          surveyMetadataURI,
-        }),
-      });
-
-      setIsLoading(false);
-
-      console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${response.taskId}`);
-      if (response?.taskId) {
-        // Start polling for the transaction status
-        setTaskId(response.taskId);
-      }
-    } catch (error) {
-      console.error("Failed to execute transaction:", error);
-      setTaskId(null);
-    }
-  };
+  const CONTRACT_ADDRESS = contractAddress; // Replace with your contract's address
+  console.log("CONTRACT_ADDRESS123", CONTRACT_ADDRESS);
+  console.log("SurveyToken", SurveyToken);
+  // const { write } = useContractWrite({
+  //   address: CONTRACT_ADDRESS,
+  //   abi: SurveyToken,
+  //   functionName: "submitSurvey", // Replace with your mint function's name
+  // });
 
   const verifyPolygonZK = async () => {
     const url = "https://issuer-admin.polygonid.me/v1/credentials/links";
@@ -182,6 +164,71 @@ function Stepper() {
     }
   };
 
+  const handleMint = async () => {
+    // Access the selectedOption state here to determine the user's choice
+    if (selectedOption === "public") {
+      console.log("Public option selected");
+
+      console.log("Credential minted!");
+      console.log("Address type:", typeof address);
+      const respondentAddress = `${address}`;
+      const surveyMetadataURI = surveyMetaQueryParam || "HELLO WORLD"; // Use the query parameter value or default to "HELLO WORLD"
+
+      console.log("respondentAddress", respondentAddress);
+      console.log("surveyMetadataURI", surveyMetadataURI);
+
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/mintNFT", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            respondentAddress,
+            surveyMetadataURI,
+          }),
+        });
+
+        setIsLoading(false);
+
+        console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${(response as any).taskId}`);
+      } catch (error) {
+        console.error("Failed to execute transaction:", error);
+      }
+    }
+    else if (selectedOption === "private") {
+      console.log("Private option selected");
+
+      try {
+        
+        setIsLoading(true);
+        const surveyMetadataURI = surveyMetaQueryParam || "HELLO WORLD"; // Use the query parameter value or default to "HELLO WORLD"
+
+
+        const response = await fetch("/api/mintNFT", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            respondentAddress: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
+            surveyMetadataURI,
+          }),
+        });
+
+        
+        await verifyPolygonZK();
+
+      
+   }
+    catch (error) {
+      console.error("Failed to execute transaction:", error);
+      }
+    }
+  };
+
+
   const renderIframe = () => {
     if (!iframeSrc) return null; // Don't render the iframe if there is no source URL
 
@@ -200,49 +247,83 @@ function Stepper() {
     switch (currentStep) {
       case 0:
         return (
-          <ConnectButton.Custom>
-            {({ account, chain, openConnectModal }) => {
-              if (!account || !chain) {
-                return (
-                  <button className="btn btn-primary btn-sm" onClick={openConnectModal} type="button">
-                    Connect Wallet
-                  </button>
-                );
-              }
-              setCurrentStep(1); // Automatically advance to next step upon successful connection
-              return null;
-            }}
-          </ConnectButton.Custom>
+          <div className="flex items-center justify-center h-full">
+            <ConnectButton.Custom>
+              {({ account, chain, openConnectModal }) => {
+                if (!account || !chain) {
+                  return (
+                    <button className="btn btn-primary btn-sm" onClick={openConnectModal} type="button">
+                      Connect Wallet
+                    </button>
+                  );
+                }
+                setCurrentStep(1); // Automatically advance to next step upon successful connection
+                return null;
+              }}
+            </ConnectButton.Custom>
+          </div>
         );
       case 1:
         return (
-          <div>
-            <p>Verification process content here...</p>
-            <button className="btn btn-secondary btn-sm" onClick={handleVerificationNext}>
-              Next
-            </button>
+          <div className="flex items-center justify-center">
+            <div className="flex flex-col items-center w-full gap-4">
+              <div className="flex flex-col items-center w-full gap-1">
+                <div>Proposal URL</div>
+                {proposalURLQueryParam && (
+                  <Link className="underline hover:cursor-pointer" href={proposalURLQueryParam as string} target="blank">
+                    {proposalURLQueryParam}
+                  </Link>
+                )}
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <div>Survey Submission</div>
+                {surveyMetaQueryParam && <div>{atob(surveyMetaQueryParam as string)}</div>}
+              </div>
+
+              <button className="btn btn-secondary btn-sm" onClick={handleVerificationNext}>
+                Next
+              </button>
+            </div>
           </div>
         );
       case 2:
         return (
-          <div className="flex items-center">
-            {isLoading ? (
-              <button className="btn btn-sm" disabled>
-                <span className="spinner-border spinner-border-sm me-2" />
-                Loading...
+          <div className="flex flex-col items-center w-full gap-2">
+            Would you like your survey identity to be public or private?
+            <div className="flex flex-row gap-2">
+              {/*Make data public option */}
+              <div
+                className={`border border-gray-200 rounded-md p-4 mr-4 hover:cursor-pointer hover:bg-slate-100 items-center justify-center ${
+                  selectedOption === "public" ? "bg-indigo-100" : ""
+                }`}
+                onClick={() => setSelectedOption("public")}
+              >
+                <GlobeAltIcon className="h-12 w-12 text-gray-500" aria-hidden="true" />
+                Public
+              </div>
+
+              <div
+                className={`border border-gray-200 rounded-md p-4 mr-4 hover:cursor-pointer hover:bg-slate-100 items-center justify-center ${
+                  selectedOption === "private" ? "bg-indigo-100" : ""
+                }`}
+                onClick={() => setSelectedOption("private")}
+              >
+                <LockClosedIcon className="h-12 w-12 text-gray-500" aria-hidden="true" />
+                Private
+              </div>
+            </div>
+            <div className="flex items-center">
+          {isLoading && selectedOption === "private" ? (
+            renderIframe()
+          ) : (
+            !isLoading && (
+              <button className="btn btn-success btn-sm" onClick={handleMint}>
+                Mint
               </button>
-            ) : (
-              <>
-                {/* {qrCodeUrl ? <QRCode value={qrCodeUrl} /> : null} Render the QR code from the URL */}
-                {iframeSrc ? (
-                  renderIframe()
-                ) : (
-                  <button className="btn btn-success btn-sm" onClick={verifyPolygonZK}>
-                    Mint
-                  </button>
-                )}
-              </>
-            )}
+            )
+          )}
+          {isLoading && <span className="spinner-border spinner-border-sm me-2" />}
+        </div>
           </div>
         );
       default:
@@ -310,7 +391,7 @@ function Stepper() {
           })}
         </ol>
       </div>
-      <div className="p-4 bg-white rounded shadow-md mt-4">{renderStepContent()}</div>
+      <div className="p-4 bg-white rounded shadow-md mt-4 items-center">{renderStepContent()}</div>
     </div>
   );
 }
