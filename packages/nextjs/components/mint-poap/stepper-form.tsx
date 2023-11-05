@@ -23,64 +23,6 @@ const pollTaskStatus = ({ taskId }) => {
   return fetch(`https://relay.gelato.digital/tasks/status/${taskId}`).then(res => res.json());
 };
 
-const surveyTokenAbi = [
-  // ... other contract methods,
-  "function submitSurvey(address respondent, string surveyMetadataURI) public returns (uint256)",
-];
-
-const surveyTokenAddress = "0x5d55066aBCFaccAB00899a76D3281390Be10CD87";
-
-const safeAddress = "0x3595c48501FC819ee506907ffd912BC2936e36e5";
-
-const privateKey = "<ADD PRIVATE KEY>";
-
-// Function to execute a transaction with gas fees paid by Gelato SyncFee
-async function executeGelatoSyncFeeTransaction(respondentAddress: string, surveyMetadataURI: string) {
-  // RPC URL of the Gnisis Chain
-  const RPC_URL = "https://rpc.gnosischain.com/";
-  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
-  console.log("privateKey",privateKey )
-  const signer = new ethers.Wallet(privateKey, provider);
-
-  // Create an instance of the contract
-  const surveyTokenContract = new ethers.Contract(surveyTokenAddress, surveyTokenAbi, signer);
-
-  // Encode the function call
-  const data = surveyTokenContract.interface.encodeFunctionData("submitSurvey", [respondentAddress, surveyMetadataURI]);
-
-  // Prepare the transaction object
-  const transactions: MetaTransactionData[] = [
-    {
-      to: surveyTokenAddress,
-      data: data,
-      value: "0",
-    },
-  ];
-
-  // Create the Protocol Kit and Relay Kit instances
-  const ethAdapter = new EthersAdapter({
-    ethers,
-    signerOrProvider: signer,
-  });
-
-  const safeSDK = await Safe.create({
-    ethAdapter,
-    safeAddress,
-  });
-
-  const relayKit = new GelatoRelayPack();
-
-  // Prepare the transaction
-  const safeTransaction = await relayKit.createRelayedTransaction({ safe: safeSDK, transactions });
-  const signedSafeTransaction = await safeSDK.signTransaction(safeTransaction);
-
-  // Send the transaction to the relay
-  const response = await relayKit.executeRelayTransaction(signedSafeTransaction, safeSDK);
-  console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${response.taskId}`);
-  // Return the response which presumably contains the Task ID
-  return response;
-}
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -98,17 +40,18 @@ function Stepper() {
   const { address } = useAccount();
   const [currentStep, setCurrentStep] = useState(address ? 1 : 0);
   const [taskId, setTaskId] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient()
 
-  const { data, isLoading } = useQuery({
-  queryKey: ['taskStatus', taskId], 
-  queryFn: () => { 
-    console.log("Polling")
-    pollTaskStatus({ taskId })
-   },
-  enabled: !!taskId
-})
+//   const { data, isLoading } = useQuery({
+//   queryKey: ['taskStatus', taskId], 
+//   queryFn: () => { 
+//     console.log("Polling")
+//     pollTaskStatus({ taskId })
+//    },
+//   enabled: !!taskId
+// })
   
 
   
@@ -148,13 +91,26 @@ function Stepper() {
   const handleMint = async () => {
     // Add minting logic here
     console.log("Credential minted!");
+    const respondentAddress ="0x342822C90cE6Cb1414811D503357a732ae5EfF0F";
+    const surveyMetadataURI = "HELLO WORLD";
+
     try {
-      const response = await executeGelatoSyncFeeTransaction(
-        "0x342822C90cE6Cb1414811D503357a732ae5EfF0F",
-        "HELLO WORLD",
-      );
-      console.log(response);
-      if (response.taskId) {
+      setIsLoading(true)
+      const response = await fetch('/api/mintNFT', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          respondentAddress,
+          surveyMetadataURI,
+        }),
+      });
+
+      setIsLoading(false)
+
+      console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${response.taskId}`);
+      if (response?.taskId) {
         // Start polling for the transaction status
         setTaskId(response.taskId);
       }
