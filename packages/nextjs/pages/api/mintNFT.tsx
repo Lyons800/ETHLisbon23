@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Encode the function call
       const data = surveyTokenContract.interface.encodeFunctionData("submitSurvey", [
         respondentAddress,
-        surveyMetadataURI,
+        atob(surveyMetadataURI),
       ]);
 
       // Prepare the transaction object
