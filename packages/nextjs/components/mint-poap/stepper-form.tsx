@@ -1,15 +1,117 @@
 import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Safe, { EthersAdapter } from "@safe-global/protocol-kit";
+import { GelatoRelayPack } from "@safe-global/relay-kit";
+import { MetaTransactionData } from "@safe-global/safe-core-sdk-types";
+import { prepareSendTransaction, sendTransaction } from "@wagmi/core";
+import { ethers } from "ethers";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 import { useAccount } from "wagmi";
 import { CheckIcon } from "@heroicons/react/24/solid";
+
+const queryClient = new QueryClient()
+
+
+
+const pollTaskStatus = ({ taskId }) => {
+  return fetch(`https://relay.gelato.digital/tasks/status/${taskId}`).then(res => res.json());
+};
+
+const surveyTokenAbi = [
+  // ... other contract methods,
+  "function submitSurvey(address respondent, string surveyMetadataURI) public returns (uint256)",
+];
+
+const surveyTokenAddress = "0x5d55066aBCFaccAB00899a76D3281390Be10CD87";
+
+const safeAddress = "0x3595c48501FC819ee506907ffd912BC2936e36e5";
+
+const privateKey = "<ADD PRIVATE KEY>";
+
+// Function to execute a transaction with gas fees paid by Gelato SyncFee
+async function executeGelatoSyncFeeTransaction(respondentAddress: string, surveyMetadataURI: string) {
+  // RPC URL of the Gnisis Chain
+  const RPC_URL = "https://rpc.gnosischain.com/";
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+  console.log("privateKey",privateKey )
+  const signer = new ethers.Wallet(privateKey, provider);
+
+  // Create an instance of the contract
+  const surveyTokenContract = new ethers.Contract(surveyTokenAddress, surveyTokenAbi, signer);
+
+  // Encode the function call
+  const data = surveyTokenContract.interface.encodeFunctionData("submitSurvey", [respondentAddress, surveyMetadataURI]);
+
+  // Prepare the transaction object
+  const transactions: MetaTransactionData[] = [
+    {
+      to: surveyTokenAddress,
+      data: data,
+      value: "0",
+    },
+  ];
+
+  // Create the Protocol Kit and Relay Kit instances
+  const ethAdapter = new EthersAdapter({
+    ethers,
+    signerOrProvider: signer,
+  });
+
+  const safeSDK = await Safe.create({
+    ethAdapter,
+    safeAddress,
+  });
+
+  const relayKit = new GelatoRelayPack();
+
+  // Prepare the transaction
+  const safeTransaction = await relayKit.createRelayedTransaction({ safe: safeSDK, transactions });
+  const signedSafeTransaction = await safeSDK.signTransaction(safeTransaction);
+
+  // Send the transaction to the relay
+  const response = await relayKit.executeRelayTransaction(signedSafeTransaction, safeSDK);
+  console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${response.taskId}`);
+  // Return the response which presumably contains the Task ID
+  return response;
+}
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Stepper() {
+export default function StepperWraper() {
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Stepper />
+    </QueryClientProvider>
+  );
+}
+
+function Stepper() {
   const { address } = useAccount();
   const [currentStep, setCurrentStep] = useState(address ? 1 : 0);
+  const [taskId, setTaskId] = useState<any>(null);
+
+  const queryClient = useQueryClient()
+
+  const { data, isLoading } = useQuery({
+  queryKey: ['taskStatus', taskId], 
+  queryFn: () => { 
+    console.log("Polling")
+    pollTaskStatus({ taskId })
+   },
+  enabled: !!taskId
+})
+  
+
+  
 
   useEffect(() => {
     if (address && currentStep === 0) {
@@ -43,9 +145,23 @@ export default function Stepper() {
     setCurrentStep(2);
   };
 
-  const handleMint = () => {
+  const handleMint = async () => {
     // Add minting logic here
     console.log("Credential minted!");
+    try {
+      const response = await executeGelatoSyncFeeTransaction(
+        "0x342822C90cE6Cb1414811D503357a732ae5EfF0F",
+        "HELLO WORLD",
+      );
+      console.log(response);
+      if (response.taskId) {
+        // Start polling for the transaction status
+        setTaskId(response.taskId);
+      }
+    } catch (error) {
+      console.error("Failed to execute transaction:", error);
+      setTaskId(null);
+    }
   };
 
   const renderStepContent = () => {
@@ -78,9 +194,16 @@ export default function Stepper() {
       case 2:
         return (
           <div className="flex items-center">
-            <button className="btn btn-success btn-sm" onClick={handleMint}>
-              Mint
-            </button>
+            {isLoading ? (
+              <button className="btn btn-sm" disabled>
+                <span className="spinner-border spinner-border-sm me-2" />
+                Loading...
+              </button>
+            ) : (
+              <button className="btn btn-success btn-sm" onClick={handleMint}>
+                Mint
+              </button>
+            )}
           </div>
         );
       default:
