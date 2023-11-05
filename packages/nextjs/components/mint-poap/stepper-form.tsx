@@ -13,6 +13,16 @@ export default function Stepper() {
   const { address } = useAccount();
   const [currentStep, setCurrentStep] = useState(address ? 1 : 0);
   const [selectedOption, setSelectedOption] = useState<"public" | "private" | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  //   const { data, isLoading } = useQuery({
+  //   queryKey: ['taskStatus', taskId],
+  //   queryFn: () => {
+  //     console.log("Polling")
+  //     pollTaskStatus({ taskId })
+  //    },
+  //   enabled: !!taskId
+  // })
 
   useEffect(() => {
     if (address && currentStep === 0) {
@@ -76,6 +86,28 @@ export default function Stepper() {
     }
 
     console.log("Credential minted!");
+    const respondentAddress = "0x342822C90cE6Cb1414811D503357a732ae5EfF0F";
+    const surveyMetadataURI = "HELLO WORLD";
+
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/mintNFT", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          respondentAddress,
+          surveyMetadataURI,
+        }),
+      });
+
+      setIsLoading(false);
+
+      console.log(`Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${(response as any).taskId}`);
+    } catch (error) {
+      console.error("Failed to execute transaction:", error);
+    }
   };
 
   const renderStepContent = () => {
@@ -131,9 +163,18 @@ export default function Stepper() {
                 Private
               </div>
             </div>
-            <button className="btn btn-success btn-sm" onClick={handleMint}>
-              Mint
-            </button>
+            <div className="flex items-center">
+              {isLoading ? (
+                <button className="btn btn-sm" disabled>
+                  <span className="spinner-border spinner-border-sm me-2" />
+                  Loading...
+                </button>
+              ) : (
+                <button className="btn btn-success btn-sm" onClick={handleMint}>
+                  Mint
+                </button>
+              )}
+            </div>
           </div>
         );
       default:
