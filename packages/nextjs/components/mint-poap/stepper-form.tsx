@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import SurveyToken from "../../SoulBoundToken.json";
 import proposals from "./proposals.json";
@@ -128,33 +129,47 @@ export default function Stepper() {
     switch (currentStep) {
       case 0:
         return (
-          <ConnectButton.Custom>
-            {({ account, chain, openConnectModal }) => {
-              if (!account || !chain) {
-                return (
-                  <button className="btn btn-primary btn-sm" onClick={openConnectModal} type="button">
-                    Connect Wallet
-                  </button>
-                );
-              }
-              setCurrentStep(1); // Automatically advance to next step upon successful connection
-              return null;
-            }}
-          </ConnectButton.Custom>
+          <div className="flex items-center justify-center h-full">
+            <ConnectButton.Custom>
+              {({ account, chain, openConnectModal }) => {
+                if (!account || !chain) {
+                  return (
+                    <button className="btn btn-primary btn-sm" onClick={openConnectModal} type="button">
+                      Connect Wallet
+                    </button>
+                  );
+                }
+                setCurrentStep(1); // Automatically advance to next step upon successful connection
+                return null;
+              }}
+            </ConnectButton.Custom>
+          </div>
         );
       case 1:
         return (
-          <div>
-            <p>Verification process content here...</p>
-            <button className="btn btn-secondary btn-sm" onClick={handleVerificationNext}>
-              Next
-            </button>
+          <div className="flex items-center justify-center">
+            <div className="flex flex-col items-center w-full gap-4">
+              <div className="flex flex-col items-center w-full gap-1">
+                <div>Proposal URL</div>
+                <Link className="underline hover:cursor-pointer" href={proposalURLQueryParam as string} target="blank">
+                  {proposalURLQueryParam}
+                </Link>
+              </div>
+              <div className="flex flex-col items-center w-full gap-1">
+                <div>Survey Submission</div>
+                <div>{surveyMetaQueryParam}</div>
+              </div>
+
+              <button className="btn btn-secondary btn-sm" onClick={handleVerificationNext}>
+                Next
+              </button>
+            </div>
           </div>
         );
       case 2:
         return (
           <div className="flex flex-col items-center w-full gap-2">
-            Would you like your survey result to be public or private?
+            Would you like your survey identity to be public or private?
             <div className="flex flex-row gap-2">
               {/*Make data public option */}
               <div
@@ -256,7 +271,7 @@ export default function Stepper() {
           })}
         </ol>
       </div>
-      <div className="p-4 bg-white rounded shadow-md mt-4">{renderStepContent()}</div>
+      <div className="p-4 bg-white rounded shadow-md mt-4 items-center">{renderStepContent()}</div>
     </div>
   );
 }

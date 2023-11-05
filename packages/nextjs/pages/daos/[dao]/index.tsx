@@ -11,20 +11,21 @@ function ProposalsPage() {
   const allProposals = [
     {
       id: "0xE35dbC55480d5a15805dbEC0e2109e34d5568799",
-      title: "Proposal 1",
-      description: "This is the first proposal",
+      title: "[SEP #7] Governance Framework",
+      description: "https://forum.safe.global/t/sep-7-governance-framework/3711",
       daoId: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
     },
     {
       id: "0x3bb247ca67B5a23D25F7FAAdC4c28E1332Aa1489",
-      title: "Proposal 2",
-      description: "This is the second proposal",
+      title: "[SEP #6] Safe Grants Program (SGP)",
+      description: "https://forum.safe.global/t/sep-6-safe-grants-program-sgp/3213",
       daoId: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
     },
     {
       id: "0x5d55066aBCFaccAB00899a76D3281390Be10CD87",
-      title: "Survey Token Checker",
-      description: "This is the third proposal",
+      title: "[SEP #5] Redistributing Unredeemed Tokens From User Airdrop Allocation",
+      description:
+        "https://forum.safe.global/t/sep-5-redistributing-unredeemed-tokens-from-user-airdrop-allocation/2172",
       daoId: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
     },
   ];
