@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 import { NextPage } from "next";
 import { UserGroupIcon } from "@heroicons/react/24/outline";
 
 const daos = [
   {
-    id: "1",
+    id: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
     name: "MetaCartel Ventures",
     members: 100,
     imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
@@ -12,30 +13,30 @@ const daos = [
     description:
       "MetaCartel Ventures is a DAO that invests in early stage projects that are building the future of web3.",
   },
-  {
-    id: "2",
-    name: "CityDAO",
-    members: 100,
-    imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
-    backgroundUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
-    description: "CityDAO is a DAO that invests in early stage projects that are building the future of web3.",
-  },
-  {
-    id: "3",
-    name: "SafeDAO",
-    members: 100,
-    imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
-    backgroundUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
-    description: "SafeDAO is a DAO that invests in early stage projects that are building the future of web3.",
-  },
-  {
-    id: "4",
-    name: "Near",
-    members: 100,
-    imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
-    backgroundUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
-    description: "Near is a DAO that invests in early stage projects that are building the future of web3.",
-  },
+  // {
+  //   id: "2",
+  //   name: "CityDAO",
+  //   members: 100,
+  //   imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
+  //   backgroundUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
+  //   description: "CityDAO is a DAO that invests in early stage projects that are building the future of web3.",
+  // },
+  // {
+  //   id: "3",
+  //   name: "SafeDAO",
+  //   members: 100,
+  //   imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
+  //   backgroundUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
+  //   description: "SafeDAO is a DAO that invests in early stage projects that are building the future of web3.",
+  // },
+  // {
+  //   id: "4",
+  //   name: "Near",
+  //   members: 100,
+  //   imageUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
+  //   backgroundUrl: "https://pbs.twimg.com/profile_images/1445734300582875136/hjFxvB-Q_400x400.jpg",
+  //   description: "Near is a DAO that invests in early stage projects that are building the future of web3.",
+  // },
 ];
 
 const DaosPage: NextPage = () => {
@@ -44,7 +45,7 @@ const DaosPage: NextPage = () => {
       <ul role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8">
         {daos.map(dao => (
           <li key={dao.id} className="overflow-hidden rounded-xl border border-gray-200 lg:max-w-md">
-            <a href="daos/1" className="block">
+            <Link href={`daos/${dao.id}`} passHref>
               <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
                 <Image
                   src={dao.imageUrl}
@@ -72,7 +73,7 @@ const DaosPage: NextPage = () => {
                   <dd className="flex items-start gap-x-2"></dd>
                 </div>
               </dl>
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

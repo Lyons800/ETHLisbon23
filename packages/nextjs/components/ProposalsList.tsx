@@ -4,7 +4,7 @@ interface Proposal {
   id: string;
   title: string;
   description: string;
-  daoId: number;
+  daoId: string;
 }
 
 interface ProposalsListProps {

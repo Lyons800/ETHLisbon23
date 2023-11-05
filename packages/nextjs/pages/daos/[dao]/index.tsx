@@ -13,19 +13,19 @@ function ProposalsPage() {
       id: "0x22C1f6050E56d2876009903609a2cC3fEf83B415",
       title: "Proposal 1",
       description: "This is the first proposal",
-      daoId: 1,
+      daoId: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
     },
     {
       id: "0x3bb247ca67B5a23D25F7FAAdC4c28E1332Aa1489",
       title: "Proposal 2",
       description: "This is the second proposal",
-      daoId: 1,
+      daoId: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
     },
     {
       id: "0x5d55066aBCFaccAB00899a76D3281390Be10CD87",
       title: "Survey Token Checker",
       description: "This is the third proposal",
-      daoId: 1,
+      daoId: "0x3595c48501FC819ee506907ffd912BC2936e36e5",
     },
   ];
   // fetch proposals (smart contracts) based on the DAO id from the smart contract
@@ -40,7 +40,7 @@ function ProposalsPage() {
   //     fetchProposals();
   //   }, [dao]);
 
-  const proposals = dao ? allProposals.filter(proposal => proposal.daoId === +dao) : [];
+  const proposals = dao ? allProposals.filter(proposal => proposal.daoId === dao) : [];
 
   return (
     <div className="flex flex-col gap-y-6 lg:gap-y-8 py-8 lg:py-12 lg-mx-12 justify-center items-center">
